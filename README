@@ -7,22 +7,16 @@ to ModSecurity and returns the verdict.
   Compilation
 ---------------
 
-You must compile ModSecurity in standalone mode. Below an example for
-ModSecurity-2.9.1. Note that ModSecurity depends the Apache APR. I assume that
-the Apache dependencies are installed on the system.
+You must compile ModSecurity. Below an example for ModSecurity-v3.0.4.
 
    ./configure \
       --prefix=$PWD/INSTALL \
-		--disable-apache2-module \
-      --enable-standalone-module \
-      --enable-pcre-study \
       --without-lua \
       --enable-pcre-jit
    make
 	make -C standalone install
 	mkdir -p $PWD/INSTALL/include
 	cp standalone/*.h $PWD/INSTALL/include
-	cp apache2/*.h $PWD/INSTALL/include
 
 Note that this compilation method works, but is a little bit rustic. I can't
 deal with Lua, I supposed that is a dependencies problem on my computer.
@@ -67,7 +61,7 @@ the configuration template to use for your SPOE with ModSecurity module:
       use-backend spoe-modsecurity
 
    spoe-message check-request
-      args unique-id method path query req.ver req.hdrs_bin req.body_size req.body
+      args unique-id src src_port dst dst_port method path query req.ver req.hdrs_bin req.body_size req.body
       event on-frontend-http-request
 
 The engine is in the scope "modsecurity". So to enable it, you must set the
@@ -75,6 +69,7 @@ following line in a frontend/listener section:
 
    frontend my-front
       ...
+      option http-buffer-request
       filter spoe engine modsecurity config spoe-modsecurity.conf
       ...
 

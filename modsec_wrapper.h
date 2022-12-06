@@ -19,6 +19,10 @@
 
 struct modsecurity_parameters {
 	struct sample uniqueid;
+	struct sample src_ip;
+	struct sample src_port;
+	struct sample dst_ip;
+	struct sample dst_port;
 	struct sample method;
 	struct sample path;
 	struct sample query;
@@ -30,5 +34,6 @@ struct modsecurity_parameters {
 
 int modsecurity_load(const char *file);
 int modsecurity_process(struct worker *worker, struct modsecurity_parameters *params);
+void modsecurity_close();
 
 #endif /* __MODSEC_WRAPPER_H__ */

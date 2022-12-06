@@ -1,0 +1,4 @@
+.idea
+*.o
+modsecurity
+modsecurity-v3.0.*

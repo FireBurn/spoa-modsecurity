@@ -1281,7 +1281,7 @@ process_frame_cb(evutil_socket_t fd, short events, void *arg)
 
 			memset(&params, 0, sizeof(params));
 
-			if (nbargs != 8)
+			if (nbargs != 12)
 				goto skip_message;
 
 			/* Decode parameter name. */
@@ -1290,6 +1290,38 @@ process_frame_cb(evutil_socket_t fd, short events, void *arg)
 
 			/* Decode unique id. */
 			if (spoe_decode_data(&p, end, &params.uniqueid) == -1)
+				goto skip_message;
+
+			/* Decode parameter name. */
+			if (spoe_decode_buffer(&p, end, &str, &sz) == -1)
+				goto stop_processing;
+
+			/* Decode src ip. */
+			if (spoe_decode_data(&p, end, &params.src_ip) == -1)
+				goto skip_message;
+
+			/* Decode parameter name. */
+			if (spoe_decode_buffer(&p, end, &str, &sz) == -1)
+				goto stop_processing;
+
+			/* Decode src port. */
+			if (spoe_decode_data(&p, end, &params.src_port) == -1)
+				goto skip_message;
+
+			/* Decode parameter name. */
+			if (spoe_decode_buffer(&p, end, &str, &sz) == -1)
+				goto stop_processing;
+
+			/* Decode dest ip. */
+			if (spoe_decode_data(&p, end, &params.dst_ip) == -1)
+				goto skip_message;
+
+			/* Decode parameter name. */
+			if (spoe_decode_buffer(&p, end, &str, &sz) == -1)
+				goto stop_processing;
+
+			/* Decode dest port. */
+			if (spoe_decode_data(&p, end, &params.dst_port) == -1)
 				goto skip_message;
 
 			/* Decode parameter name. */
@@ -1332,6 +1364,7 @@ process_frame_cb(evutil_socket_t fd, short events, void *arg)
 			if (spoe_decode_data(&p, end, &params.hdrs_bin) == -1)
 				goto skip_message;
 
+#if 0
 			/* Decode parameter name. */
 			if (spoe_decode_buffer(&p, end, &str, &sz) == -1)
 				goto stop_processing;
@@ -1347,6 +1380,7 @@ process_frame_cb(evutil_socket_t fd, short events, void *arg)
 			/* Decode body. */
 			if (spoe_decode_data(&p, end, &params.body) == -1)
 				goto skip_message;
+#endif
 
 			frame->modsec_code = modsecurity_process(frame->worker, &params);
 		}
@@ -1382,7 +1416,7 @@ process_frame_cb(evutil_socket_t fd, short events, void *arg)
 		*p++ = SPOE_ACT_T_SET_VAR;                     /* Action type */
 		*p++ = 3;                                      /* Number of args */
 		*p++ = SPOE_SCOPE_TXN;                         /* Arg 1: the scope */
-		spoe_encode_buffer("code", 8, &p, end);        /* Arg 2: variable name */
+		spoe_encode_buffer("code", 4, &p, end);        /* Arg 2: variable name */
 		*p++ = SPOE_DATA_T_UINT32;
 		encode_varint(frame->modsec_code, &p, end); /* Arg 3: variable value */
 		frame->len = (p - frame->buf);
@@ -1907,6 +1941,7 @@ main(int argc, char **argv)
 	return EXIT_SUCCESS;
 
   error:
+	modsecurity_close();
 	if (workers != NULL)
 		free(workers);
 	if (signal_event != NULL)
