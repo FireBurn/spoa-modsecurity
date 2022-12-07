@@ -13,6 +13,7 @@
  * 2 of the License, or (at your option) any later version.
  *
  */
+#include <errno.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <strings.h>
