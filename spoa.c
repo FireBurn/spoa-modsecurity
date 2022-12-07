@@ -1364,7 +1364,6 @@ process_frame_cb(evutil_socket_t fd, short events, void *arg)
 			if (spoe_decode_data(&p, end, &params.hdrs_bin) == -1)
 				goto skip_message;
 
-#if 0
 			/* Decode parameter name. */
 			if (spoe_decode_buffer(&p, end, &str, &sz) == -1)
 				goto stop_processing;
@@ -1380,7 +1379,6 @@ process_frame_cb(evutil_socket_t fd, short events, void *arg)
 			/* Decode body. */
 			if (spoe_decode_data(&p, end, &params.body) == -1)
 				goto skip_message;
-#endif
 
 			frame->modsec_code = modsecurity_process(frame->worker, &params);
 		}
