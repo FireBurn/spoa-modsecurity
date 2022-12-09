@@ -1244,7 +1244,7 @@ worker_monitor_cb(evutil_socket_t fd, short events, void *arg)
 {
 	struct worker *worker = arg;
 
-	LOG(worker, "%u clients connected", worker->nbclients);
+	DEBUG(worker, "%u clients connected", worker->nbclients);
 }
 
 static void
