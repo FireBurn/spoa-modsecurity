@@ -117,8 +117,8 @@ int modsecurity_load(const char *file)
 	/* Set name for our process. */
 	gethostname(host_name, 60);
 	msg_len = snprintf(NULL, 0, "spoa-modsec-%s", host_name);
-	msg = malloc(sizeof(char) * msg_len);
-	snprintf(msg, msg_len, "spoa-modsec-%s", host_name);
+	msg = malloc(sizeof(char) * msg_len + 1);
+	snprintf(msg, msg_len + 1, "spoa-modsec-%s", host_name);
 	msc_set_connector_info(modsec_server, msg);
 	free(msg);
 
