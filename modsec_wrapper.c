@@ -125,6 +125,7 @@ int modsecurity_load(const char *file)
 	/* Load rules. */
 	rules = msc_create_rules_set();
 	int rc = msc_rules_add_file(rules, file, &error_msg);
+	LOG(&null_worker, "ModSecurity loaded %i rules", rc);
 	if (rc < 1) {
 		LOG(&null_worker, "ModSecurity load configuration failed: %s\n", error_msg);
 		// Internally, error_msg, was strdup'd by ModSec
