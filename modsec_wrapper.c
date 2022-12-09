@@ -289,9 +289,9 @@ int modsecurity_process(struct worker *worker, struct modsecurity_parameters *pa
 	}
 
 	/* Generate parsed_uri */
-	uri_len = snprintf(NULL, 0, "http://%.*s%.*s%.*s", (int)hostname_len, hostname, (int)path_len, path, (int)qs_len, qs);
+	uri_len = snprintf(NULL, 0, "http://%.*s%.*s?%.*s", (int)hostname_len, hostname, (int)path_len, path, (int)qs_len, qs);
 	uri = malloc(sizeof(char) * (uri_len+1));
-	snprintf(uri, uri_len+1, "http://%.*s%.*s%.*s", (int)hostname_len, hostname, (int)path_len, path, (int)qs_len, qs);
+	snprintf(uri, uri_len+1, "http://%.*s%.*s?%.*s", (int)hostname_len, hostname, (int)path_len, path, (int)qs_len, qs);
 
 	meth_z = terminated(&params->method);
 	vers_z = terminated(&params->vers);
